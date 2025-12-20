@@ -1,0 +1,14 @@
+NAME
+	libcmap - Unicode character data library
+
+SYNOPSIS
+	#include <libcmap.h>
+
+	Link with -lcmap.
+
+DESCRIPTION
+	The libcmap library provides data about characters in the
+	Unicode Character Set.
+
+SEE ALSO
+	libgrapheme(7)
