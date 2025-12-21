@@ -17,6 +17,8 @@
 #define LIBCMAP_ULTIMATE_CODEPOINT UINT32_C(0x10FFFF)
 #define LIBCMAP_UNIVERSE_RANGE {0, LIBCMAP_ULTIMATE_CODEPOINT}
 
+#define LIBCMAP_RANGE_SIZE(RANGE) ((size_t)((RANGE)->last - (RANGE)->first + 1U))
+
 
 struct libcmap_range {
 	uint32_t first;
