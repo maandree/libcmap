@@ -16,6 +16,8 @@ LIB_VERSION = $(LIB_MAJOR).$(LIB_MINOR)
 LIB_NAME = cmap
 
 UNICODE_VERSION = 17.0.0
+# Before updating, remember to check downloaded files
+# changes in how unlisted codepoints should be treated
 
 
 OBJ =\
@@ -23,7 +25,9 @@ OBJ =\
 	libcmap_script_list.o\
 	libcmap_find_in_no_block.o\
 	libcmap_find_block.o\
-	libcmap_find_script.o
+	libcmap_find_script.o\
+	libcmap_sprint_range.o\
+	libcmap_snprint_range.o
 
 HDR =\
 	libcmap.h

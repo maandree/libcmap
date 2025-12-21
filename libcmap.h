@@ -43,6 +43,9 @@ int libcmap_find_in_no_block(uint32_t codepoint, size_t *offset_out, size_t *sub
 const struct libcmap_block *libcmap_find_block(uint32_t codepoint, size_t *offset_out);
 const struct libcmap_script *libcmap_find_script(uint32_t codepoint, size_t *offset_out, size_t *subrange_out);
 
+int libcmap_sprint_range(char *buf, const struct libcmap_range *range, const char *endash);
+int libcmap_snprint_range(char *buf, size_t bufsize, const struct libcmap_range *range, const char *endash);
+
 
 #undef LIBCMAP_PURE_
 #undef LIBCMAP_CONST_
