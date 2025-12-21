@@ -196,6 +196,9 @@ int libcmap_find_in_no_block(uint32_t codepoint, size_t *offset_out, size_t *sub
  * 
  * If `NULL` is returned, *offset_out` will not be set
  * 
+ * The returned pointer (unless `NULL`) is `&libcmap_block_list[i]`
+ * for some non-negative `i` less than `libcmap_block_list_size`
+ * 
  * @seealso  libcmap_find_in_no_block
  * @seealso  libcmap_find_script
  */
@@ -221,6 +224,9 @@ const struct libcmap_block *libcmap_find_block(uint32_t codepoint, size_t *offse
  *                        greater than `LIBCMAP_ULTIMATE_CODEPOINT`)
  * 
  * If 0 is returned, `*offset_out` and `*subrange_out` will not be set
+ * 
+ * The returned pointer (unless `NULL`) is `&libcmap_script_list[i]`
+ * for some non-negative `i` less than `libcmap_script_list_size`
  * 
  * @seealso  libcmap_find_block
  */
