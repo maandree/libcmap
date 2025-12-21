@@ -4,6 +4,8 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include <stdio.h>
+
 
 #if defined(__GNUC__)
 # define LIBCMAP_PURE_ __attribute__((__pure__))
@@ -224,6 +226,7 @@ const struct libcmap_block *libcmap_find_block(uint32_t codepoint, size_t *offse
  */
 const struct libcmap_script *libcmap_find_script(uint32_t codepoint, size_t *offset_out, size_t *subrange_out);
 
+
 /**
  * Print a string representing a Unicode codepoint range
  * 
@@ -233,7 +236,9 @@ const struct libcmap_script *libcmap_find_script(uint32_t codepoint, size_t *off
  * @param   endash  Desired delimiter between the first and the last
  *                  codepoint, or `NULL` for the default (not ASCII)
  * @return          The number of bytes in the string, excluding the
- *                  terminating NUL byte
+ *                  terminating NUL byte, -1 on failure
+ * 
+ * @throws  Any error specified for sprintf(3)
  * 
  * A NUL byte will added to the end of the string, but this byte
  * will not be counted in the return value
@@ -250,7 +255,9 @@ int libcmap_sprint_range(char *buf, const struct libcmap_range *range, const cha
  * @param   endash   Desired delimiter between the first and the last
  *                   codepoint, or `NULL` for the default (not ASCII)
  * @return           The number of bytes in the string, excluding the
- *                   terminating NUL byte
+ *                   terminating NUL byte, -1 on failure
+ * 
+ * @throws  Any error specified for snprintf(3)
  * 
  * A NUL byte will added to the end of the string, but this byte
  * will not be counted in the return value
@@ -267,6 +274,45 @@ int libcmap_sprint_range(char *buf, const struct libcmap_range *range, const cha
  * does not check if `buf` is `NULL`
  */
 int libcmap_snprint_range(char *buf, size_t bufsize, const struct libcmap_range *range, const char *endash);
+
+/**
+ * Print a string representing a Unicode codepoint range
+ * 
+ * @param   fp      The file to write to
+ * @param   range   The range to print a representation of
+ * @param   endash  Desired delimiter between the first and the last
+ *                  codepoint, or `NULL` for the default (not ASCII)
+ * @return          The number of bytes in the string, -1 on failure
+ * 
+ * @throws  Any error specified for fprintf(3)
+ */
+int libcmap_fprint_range(FILE *fp, const struct libcmap_range *range, const char *endash);
+
+/**
+ * Print, to standard output,  a string representing a
+ * Unicode codepoint range
+ * 
+ * @param   range   The range to print a representation of
+ * @param   endash  Desired delimiter between the first and the last
+ *                  codepoint, or `NULL` for the default (not ASCII)
+ * @return          The number of bytes in the string, -1 on failure
+ * 
+ * @throws  Any error specified for fprintf(3)
+ */
+int libcmap_print_range(const struct libcmap_range *range, const char *endash);
+
+/**
+ * Print a string representing a Unicode codepoint range
+ * 
+ * @param   fd      The file descriptor
+ * @param   range   The range to print a representation of
+ * @param   endash  Desired delimiter between the first and the last
+ *                  codepoint, or `NULL` for the default (not ASCII)
+ * @return          The number of bytes in the string, -1 on failure
+ * 
+ * @throws  Any error specified for dprintf(3)
+ */
+int libcmap_dprint_range(int fd, const struct libcmap_range *range, const char *endash);
 
 
 #undef LIBCMAP_PURE_

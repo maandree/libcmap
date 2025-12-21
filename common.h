@@ -1,7 +1,6 @@
 /* See LICENSE file for copyright and license details. */
 #include "libcmap.h"
 #include <limits.h>
-#include <stdio.h>
 
 
 #define SINGLETON_RANGE_FMT "U+%04lX"

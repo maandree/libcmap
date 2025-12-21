@@ -27,7 +27,10 @@ OBJ =\
 	libcmap_find_block.o\
 	libcmap_find_script.o\
 	libcmap_sprint_range.o\
-	libcmap_snprint_range.o
+	libcmap_snprint_range.o\
+	libcmap_fprint_range.o\
+	libcmap_print_range.o\
+	libcmap_dprint_range.o
 
 HDR =\
 	libcmap.h\
