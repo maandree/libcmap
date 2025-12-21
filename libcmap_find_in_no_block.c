@@ -14,7 +14,7 @@ libcmap_find_in_no_block(uint32_t codepoint, size_t *offset_out, size_t *subrang
 				*subrange_out = i;
 			return 1;
 		}
-		skipped += (size_t)(libcmap_no_block.ranges[i].last - libcmap_no_block.ranges[i].first) + 1U;
+		skipped += LIBCMAP_RANGE_SIZE(&libcmap_no_block.ranges[i]);
 	}
 	return 0;
 }

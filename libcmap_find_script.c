@@ -18,12 +18,8 @@ libcmap_find_script(uint32_t codepoint, size_t *offset_out, size_t *subrange_out
 					*subrange_out = j;
 				return &list[i];
 			}
-			skipped += (size_t)(list[i].ranges[j].last - list[i].ranges[j].first) + 1U;
+			skipped += LIBCMAP_RANGE_SIZE(&list[i].ranges[j]);
 		}
 	}
-	if (offset_out)
-		*offset_out = (size_t)codepoint;
-	if (subrange_out)
-		*subrange_out = 0;
 	return NULL;
 }

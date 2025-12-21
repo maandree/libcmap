@@ -14,7 +14,5 @@ libcmap_find_block(uint32_t codepoint, size_t *offset_out)
 			return &list[i];
 		}
 	}
-	if (offset_out)
-		*offset_out = (size_t)codepoint;
 	return NULL;
 }
