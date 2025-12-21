@@ -139,6 +139,9 @@ extern const size_t libcmap_block_list_size;
 /**
  * Listing of all so called scripts as divided by Unicode
  * 
+ * Each codepoint only appears once: under their primary
+ * script as assigned by Unicode
+ * 
  * The scripts are sorted, in ascending order by name,
  * except "Unknown" is added as the last script
  * 
