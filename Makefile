@@ -30,7 +30,8 @@ OBJ =\
 	libcmap_snprint_range.o
 
 HDR =\
-	libcmap.h
+	libcmap.h\
+	common.h
 
 LOBJ = $(OBJ:.o=.lo)
 

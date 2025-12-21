@@ -79,13 +79,13 @@ parse_line(char *text, size_t lineno)
 	}
 
 	high = low = strtoul(text, &text, 16);
-	if (errno || low > 0x10FFFFUL)
+	if (errno || low > ULTIMATE_CODEPOINT)
 		goto malformat;
 	if (text[0] == '.' && text[1] == '.') {
 		if (!isxdigit(text[2]))
 			goto malformat;
 		high = strtoul(&text[2], &text, 16);
-		if (errno || high > 0x10FFFFUL || high < low)
+		if (errno || high > ULTIMATE_CODEPOINT || high < low)
 			goto malformat;
 	}
 	while (isspace(*text))
@@ -218,7 +218,7 @@ output(void)
 	}
 	nranges = 1U;
 	ranges[0].low = 0;
-	ranges[0].high = 0x10FFFF;
+	ranges[0].high = ULTIMATE_CODEPOINT;
 
 	for (i = 0; i < nscripts; i++) {
 		scripts[i].nranges = join_ranges(scripts[i].ranges, scripts[i].nranges);

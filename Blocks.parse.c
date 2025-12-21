@@ -28,13 +28,13 @@ parse_line(char *text, size_t lineno)
 	}
 
 	high = low = strtoul(text, &text, 16);
-	if (errno || low > 0x10FFFFUL)
+	if (errno || low > ULTIMATE_CODEPOINT)
 		goto malformat;
 	if (text[0] == '.' && text[1] == '.') {
 		if (!isxdigit(text[2]))
 			goto malformat;
 		high = strtoul(&text[2], &text, 16);
-		if (errno || high > 0x10FFFFUL || high < low)
+		if (errno || high > ULTIMATE_CODEPOINT || high < low)
 			goto malformat;
 	}
 	while (isspace(*text))
@@ -116,7 +116,7 @@ output(void)
 	for (i = 1U; i < nblocks; i++)
 		if (blocks[i].low > blocks[i - 1U].high + 1U)
 			break;
-	if (i == nblocks && blocks[i - 1U].high == 0x10FFFFUL) {
+	if (i == nblocks && blocks[i - 1U].high == ULTIMATE_CODEPOINT) {
 		x |= printf("const struct libcmap_script libcmap_no_block = {\"No Block\", NULL, 0};\n");
 	} else {
 		x |= printf("static const struct libcmap_range No_Block[] = {\n");
@@ -124,8 +124,8 @@ output(void)
 		for (i++; i < nblocks; i++)
 			if (blocks[i].low > blocks[i - 1U].high + 1)
 				x |= printf(",\n\t{0x%04lX, 0x%04lX}", blocks[i - 1U].high + 1U, blocks[i].low - 1U);
-		if (blocks[i - 1U].high < 0x10FFFFUL)
-			x |= printf(",\n\t{0x%04lX, 0x10FFFFUL}", blocks[i - 1U].high + 1U);
+		if (blocks[i - 1U].high < ULTIMATE_CODEPOINT)
+			x |= printf(",\n\t{0x%04lX, LIBCMAP_ULTIMATE_CODEPOINT}", blocks[i - 1U].high + 1U);
 		x |= printf("\n};\n");
 		x |= printf("const struct libcmap_script libcmap_no_block = ");
 		x |= printf("{\"No Block\", No_Block, sizeof(No_Block) / sizeof(*No_Block)};\n");

@@ -1,5 +1,5 @@
 /* See LICENSE file for copyright and license details. */
-#include "libcmap.h"
+#include "common.h"
 
 
 const struct libcmap_script *

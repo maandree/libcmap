@@ -14,6 +14,10 @@
 #endif
 
 
+#define LIBCMAP_ULTIMATE_CODEPOINT UINT32_C(0x10FFFF)
+#define LIBCMAP_UNIVERSE_RANGE {0, LIBCMAP_ULTIMATE_CODEPOINT}
+
+
 struct libcmap_range {
 	uint32_t first;
 	uint32_t last;

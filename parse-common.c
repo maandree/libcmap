@@ -7,6 +7,9 @@
 #include <unistd.h>
 
 
+#define ULTIMATE_CODEPOINT 0x10FFFFUL
+
+
 static const char *argv0;
 
 
