@@ -15,10 +15,13 @@ LIB_MINOR = 0
 LIB_VERSION = $(LIB_MAJOR).$(LIB_MINOR)
 LIB_NAME = cmap
 
+UNICODE_VERSION = 17.0.0
+
 
 OBJ =\
 	libcmap_block_list.o\
 	libcmap_script_list.o\
+	libcmap_find_in_no_block.o\
 	libcmap_find_block.o\
 	libcmap_find_script.o
 
@@ -27,10 +30,18 @@ HDR =\
 
 LOBJ = $(OBJ:.o=.lo)
 
+PARSERS =\
+	Scripts.parse\
+	Blocks.parse
+
 
 all: libcmap.a libcmap.$(LIBEXT)
 $(OBJ): $(HDR)
 $(LOBJ): $(HDR)
+$(PARSERS:=.o): parse-common.c
+
+libcmap_script_list.o: Scripts.txt.c
+libcmap_block_list.o: Blocks.txt.c
 
 .c.o:
 	$(CC) -c -o $@ $< $(CFLAGS) $(CPPFLAGS)
@@ -45,6 +56,18 @@ libcmap.a: $(OBJ)
 
 libcmap.$(LIBEXT): $(LOBJ)
 	$(CC) $(LIBFLAGS) -o $@ $(LOBJ) $(LDFLAGS)
+
+Scripts.$(UNICODE_VERSION).txt:
+	$(DOWNLOAD) 'https://www.unicode.org/Public/17.0.0/ucd/Scripts.txt' > $@
+
+Blocks.$(UNICODE_VERSION).txt:
+	$(DOWNLOAD) 'https://www.unicode.org/Public/17.0.0/ucd/Blocks.txt' > $@
+
+Scripts.txt.c: Scripts.$(UNICODE_VERSION).txt Scripts.parse
+	./Scripts.parse < $(@:.txt.c=).$(UNICODE_VERSION).txt > $@
+
+Blocks.txt.c: Blocks.$(UNICODE_VERSION).txt Blocks.parse
+	./Blocks.parse < $(@:.txt.c=).$(UNICODE_VERSION).txt > $@
 
 install: libcmap.a libcmap.$(LIBEXT)
 	mkdir -p -- "$(DESTDIR)$(PREFIX)/lib"
@@ -66,8 +89,14 @@ uninstall:
 clean:
 	-rm -f -- *.o *.a *.lo *.su *.so *.so.* *.dll *.dylib
 	-rm -f -- *.gch *.gcov *.gcno *.gcda *.$(LIBEXT)
+	-rm -f -- *.txt.c *.parse
+
+clean-downloads:
+	-rm -f -- *.txt
+
+clean-all: clean clean-downloads
 
 .SUFFIXES:
 .SUFFIXES: .lo .o .c
 
-.PHONY: all install uninstall clean
+.PHONY: all install uninstall clean clean-downloads clean-all

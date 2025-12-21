@@ -12,3 +12,6 @@
 *.gcov
 *.gcno
 *.gcda
+*.txt
+*.txt.c
+*.parse

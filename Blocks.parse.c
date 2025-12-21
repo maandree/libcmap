@@ -1,0 +1,136 @@
+/* See LICENSE file for copyright and license details. */
+#include "parse-common.c"
+
+
+struct block {
+	char *name;
+	unsigned long int low, high;
+};
+
+
+static struct block *blocks = NULL;
+static size_t nblocks = 0;
+
+
+static void
+parse_line(char *text, size_t lineno)
+{
+	unsigned long int low, high;
+	char *name;
+	size_t i;
+
+	errno = 0;
+
+	if (!isxdigit(*text)) {
+	malformat:
+		fprintf(stderr, "%s: line %zu in is malformatted\n", argv0, lineno);
+		exit(1);
+	}
+
+	high = low = strtoul(text, &text, 16);
+	if (errno || low > 0x10FFFFUL)
+		goto malformat;
+	if (text[0] == '.' && text[1] == '.') {
+		if (!isxdigit(text[2]))
+			goto malformat;
+		high = strtoul(&text[2], &text, 16);
+		if (errno || high > 0x10FFFFUL || high < low)
+			goto malformat;
+	}
+	while (isspace(*text))
+		text++;
+
+	if (*text++ != ';')
+		goto malformat;
+
+	while (isspace(*text))
+		text++;
+	name = text;
+	while (*text && *text != ';')
+		text++;
+	for (i = 1U; isspace(text[-i]); i++)
+		text[-i] = '\0';
+
+	if (*text == ';') {
+		static int warned = 0;
+		if (!warned) {
+			warned = 1;
+			fprintf(stderr, "%s: unrecognised column detected in <stdin>\n", argv0);
+		}
+		*text++ = '\0';
+	} else if (*text) {
+		goto malformat;
+	}
+
+	i = nblocks++;
+	blocks = realloc(blocks, nblocks * sizeof(*blocks));
+	if (!blocks) {
+		fprintf(stderr, "%s: realloc %zu: %s\n", argv0, nblocks * sizeof(*blocks), strerror(errno));
+		exit(1);
+	}
+	blocks[i].name = strdup(name);
+	if (!blocks[i].name) {
+		fprintf(stderr, "%s: strdup: %s\n", argv0, strerror(errno));
+		exit(1);
+	}
+	blocks[i].low = low;
+	blocks[i].high = high;
+}
+
+
+static int
+blockcmp_name(const void *av, const void *bv)
+{
+	const struct block *a = av, *b = bv;
+	return strcmp(a->name, b->name);
+}
+
+
+static int
+blockcmp_range(const void *av, const void *bv)
+{
+	const struct block *a = av, *b = bv;
+	return a->low < b->low ? -1 : +1;
+}
+
+
+static int
+output(void)
+{
+	size_t i;
+	int x = 0;
+
+	qsort(blocks, nblocks, sizeof(*blocks), &blockcmp_name);
+
+	x |= printf("static const struct libcmap_block list[] = {\n");
+	for (i = 0; i < nblocks;) {
+		x |= printf("\t{\"%s\", {0x%04lX, 0x%04lX}}", blocks[i].name, blocks[i].low, blocks[i].high);
+		free(blocks[i].name);
+		x |= printf("%s\n", ++i < nblocks ? "," : "");
+	}
+	x |= printf("};\n\n");
+
+	qsort(blocks, nblocks, sizeof(*blocks), &blockcmp_range);
+	if (!nblocks || blocks[0].low)
+		abort();
+	for (i = 1U; i < nblocks; i++)
+		if (blocks[i].low > blocks[i - 1U].high + 1U)
+			break;
+	if (i == nblocks && blocks[i - 1U].high == 0x10FFFFUL) {
+		x |= printf("const struct libcmap_script libcmap_no_block = {\"No Block\", NULL, 0};\n");
+	} else {
+		x |= printf("static const struct libcmap_range No_Block[] = {\n");
+		x |= printf("\t{0x%04lX, 0x%04lX}", blocks[i - 1U].high + 1U, blocks[i].low - 1U);
+		for (i++; i < nblocks; i++)
+			if (blocks[i].low > blocks[i - 1U].high + 1)
+				x |= printf(",\n\t{0x%04lX, 0x%04lX}", blocks[i - 1U].high + 1U, blocks[i].low - 1U);
+		if (blocks[i - 1U].high < 0x10FFFFUL)
+			x |= printf(",\n\t{0x%04lX, 0x10FFFFUL}", blocks[i - 1U].high + 1U);
+		x |= printf("\n};\n");
+		x |= printf("const struct libcmap_script libcmap_no_block = ");
+		x |= printf("{\"No Block\", No_Block, sizeof(No_Block) / sizeof(*No_Block)};\n");
+	}
+
+	free(blocks);
+	return x;
+}

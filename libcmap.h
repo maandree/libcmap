@@ -26,11 +26,12 @@ struct libcmap_block {
 
 struct libcmap_script {
 	const char *name;
-	struct libcmap_range *ranges;
+	const struct libcmap_range *ranges;
 	size_t nranges;
 };
 
 
+extern const struct libcmap_script libcmap_no_block;
 extern const struct libcmap_block *const libcmap_block_list;
 extern const size_t libcmap_block_list_size;
 
@@ -38,6 +39,7 @@ extern const struct libcmap_script *const libcmap_script_list;
 extern const size_t libcmap_script_list_size;
 
 
+int libcmap_find_in_no_block(uint32_t codepoint, size_t *offset_out, size_t *subrange_out);
 const struct libcmap_block *libcmap_find_block(uint32_t codepoint, size_t *offset_out);
 const struct libcmap_script *libcmap_find_script(uint32_t codepoint, size_t *offset_out, size_t *subrange_out);
 

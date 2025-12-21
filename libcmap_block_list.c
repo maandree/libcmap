@@ -2,10 +2,7 @@
 #include "libcmap.h"
 
 
-static const struct libcmap_block list[] = {
-	{"Phony block", {0, 0}}
-};
-
+#include "Blocks.txt.c"
 
 const struct libcmap_block *const libcmap_block_list = list;
 const size_t libcmap_block_list_size = sizeof(list) / sizeof(*list);
