@@ -66,10 +66,10 @@ libcmap.$(LIBEXT): $(LOBJ)
 	$(CC) $(LIBFLAGS) -o $@ $(LOBJ) $(LDFLAGS)
 
 Scripts.$(UNICODE_VERSION).txt:
-	$(DOWNLOAD) 'https://www.unicode.org/Public/17.0.0/ucd/Scripts.txt' > $@
+	$(DOWNLOAD) 'https://www.unicode.org/Public/$(UNICODE_VERSION)/ucd/Scripts.txt' > $@
 
 Blocks.$(UNICODE_VERSION).txt:
-	$(DOWNLOAD) 'https://www.unicode.org/Public/17.0.0/ucd/Blocks.txt' > $@
+	$(DOWNLOAD) 'https://www.unicode.org/Public/$(UNICODE_VERSION)/ucd/Blocks.txt' > $@
 
 Scripts.txt.c: Scripts.$(UNICODE_VERSION).txt Scripts.parse
 	./Scripts.parse < $(@:.txt.c=).$(UNICODE_VERSION).txt > $@
