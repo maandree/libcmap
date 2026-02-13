@@ -298,7 +298,7 @@ int libcmap_snprint_range(char *buf, size_t bufsize, const struct libcmap_range 
 int libcmap_fprint_range(FILE *fp, const struct libcmap_range *range, const char *endash);
 
 /**
- * Print, to standard output,  a string representing a
+ * Print, to standard output, a string representing a
  * Unicode codepoint range
  * 
  * @param   range   The range to print a representation of
