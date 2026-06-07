@@ -48,7 +48,7 @@ parse_line(char *text, size_t lineno)
 	name = text;
 	while (*text && *text != ';')
 		text++;
-	for (i = 1U; isspace(text[-i]); i++)
+	for (i = 1u; isspace(text[-i]); i++)
 		text[-i] = '\0';
 
 	if (*text == ';') {
@@ -113,19 +113,19 @@ output(void)
 	qsort(blocks, nblocks, sizeof(*blocks), &blockcmp_range);
 	if (!nblocks || blocks[0].low)
 		abort();
-	for (i = 1U; i < nblocks; i++)
-		if (blocks[i].low > blocks[i - 1U].high + 1U)
+	for (i = 1u; i < nblocks; i++)
+		if (blocks[i].low > blocks[i - 1u].high + 1u)
 			break;
-	if (i == nblocks && blocks[i - 1U].high == ULTIMATE_CODEPOINT) {
+	if (i == nblocks && blocks[i - 1u].high == ULTIMATE_CODEPOINT) {
 		x |= printf("const struct libcmap_script libcmap_no_block = {\"No Block\", NULL, 0};\n");
 	} else {
 		x |= printf("static const struct libcmap_range No_Block[] = {\n");
-		x |= printf("\t{0x%04lX, 0x%04lX}", blocks[i - 1U].high + 1U, blocks[i].low - 1U);
+		x |= printf("\t{0x%04lX, 0x%04lX}", blocks[i - 1u].high + 1u, blocks[i].low - 1u);
 		for (i++; i < nblocks; i++)
-			if (blocks[i].low > blocks[i - 1U].high + 1)
-				x |= printf(",\n\t{0x%04lX, 0x%04lX}", blocks[i - 1U].high + 1U, blocks[i].low - 1U);
-		if (blocks[i - 1U].high < ULTIMATE_CODEPOINT)
-			x |= printf(",\n\t{0x%04lX, LIBCMAP_ULTIMATE_CODEPOINT}", blocks[i - 1U].high + 1U);
+			if (blocks[i].low > blocks[i - 1u].high + 1u)
+				x |= printf(",\n\t{0x%04lX, 0x%04lX}", blocks[i - 1u].high + 1u, blocks[i].low - 1u);
+		if (blocks[i - 1u].high < ULTIMATE_CODEPOINT)
+			x |= printf(",\n\t{0x%04lX, LIBCMAP_ULTIMATE_CODEPOINT}", blocks[i - 1u].high + 1u);
 		x |= printf("\n};\n");
 		x |= printf("const struct libcmap_script libcmap_no_block = ");
 		x |= printf("{\"No Block\", No_Block, sizeof(No_Block) / sizeof(*No_Block)};\n");

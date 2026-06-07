@@ -33,7 +33,7 @@
  * @param   RANGE:const libcmap_range *  The codepoint range
  * @return  :size_t                      The number of covered codepoints
  */
-#define LIBCMAP_RANGE_SIZE(RANGE) ((size_t)((RANGE)->last - (RANGE)->first + 1U))
+#define LIBCMAP_RANGE_SIZE(RANGE) ((size_t)((RANGE)->last - (RANGE)->first + 1u))
 
 
 /**
@@ -272,8 +272,8 @@ int libcmap_sprint_range(char *buf, const struct libcmap_range *range, const cha
  * will not be counted in the return value
  * 
  * If `bufsize` is not sufficiently large, string printed to
- * `buf` will be truncated to `bufsize - 1U` bytes, a NUL
- * byte will be added to the end (at `buf[bufsize - 1U`);
+ * `buf` will be truncated to `bufsize - 1u` bytes, a NUL
+ * byte will be added to the end (at `buf[bufsize - 1u`);
  * however if `bufsize` is 0, nothing is written to `buf`.
  * The function will always return the size the full string,
  * even if it was truncated; therefore the return value can

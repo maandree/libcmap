@@ -150,11 +150,11 @@ join_ranges(struct range *ranges, size_t n)
 		abort();
 
 	qsort(ranges, n, sizeof(*ranges), &rangecmp);
-	for (r = w = 1U; r < n; r++) {
-		if (ranges[r].low == ranges[w - 1U].low)
-			ranges[w - 1U].high = ranges[r].high;
-		else if (ranges[r].low <= ranges[w - 1U].high + 1U)
-			ranges[w - 1U].high = ranges[r].high;
+	for (r = w = 1u; r < n; r++) {
+		if (ranges[r].low == ranges[w - 1u].low)
+			ranges[w - 1u].high = ranges[r].high;
+		else if (ranges[r].low <= ranges[w - 1u].high + 1u)
+			ranges[w - 1u].high = ranges[r].high;
 		else
 			ranges[w++] = ranges[r];
 	}
@@ -175,21 +175,21 @@ range_minus(struct range **rangesp, size_t *np, const struct range *xranges, siz
 		} else if (xranges[j].low > ranges[i].high) {
 			i++;
 		} else if (xranges[j].low <= ranges[i].low && xranges[j].high >= ranges[i].high) {
-			memmove(&ranges[i], &ranges[i + 1U], (--n - i) * sizeof(*ranges));
+			memmove(&ranges[i], &ranges[i + 1u], (--n - i) * sizeof(*ranges));
 		} else if (xranges[j].low <= ranges[i].low && xranges[j].high < ranges[i].high) {
-			ranges[i].low = xranges[j++].high + 1U;
+			ranges[i].low = xranges[j++].high + 1u;
 		} else if (xranges[j].high >= ranges[i].high && xranges[j].low > ranges[i].low) {
-			ranges[i++].high = xranges[j].low - 1U;
+			ranges[i++].high = xranges[j].low - 1u;
 		} else if (xranges[j].low > ranges[i].low && xranges[j].high < ranges[i].high) {
-			ranges = realloc(ranges, (n + 1U) * sizeof(*ranges));
+			ranges = realloc(ranges, (n + 1u) * sizeof(*ranges));
 			if (!ranges) {
-				fprintf(stderr, "%s: realloc %zu: %s\n", argv0, (n + 1U) * sizeof(*ranges), strerror(errno));
+				fprintf(stderr, "%s: realloc %zu: %s\n", argv0, (n + 1u) * sizeof(*ranges), strerror(errno));
 				exit(1);
 			}
-			memmove(&ranges[i + 1U], &ranges[i], (n++ - i) * sizeof(*ranges));
-			ranges[i].low = ranges[i + 1U].low;
-			ranges[i].high = xranges[j].low - 1U;
-			ranges[i + 1U].low = xranges[j].high + 1U;
+			memmove(&ranges[i + 1u], &ranges[i], (n++ - i) * sizeof(*ranges));
+			ranges[i].low = ranges[i + 1u].low;
+			ranges[i].high = xranges[j].low - 1u;
+			ranges[i + 1u].low = xranges[j].high + 1u;
 			i++;
 		} else {
 			abort();
@@ -216,9 +216,9 @@ output(void)
 		fprintf(stderr, "%s: malloc %zu: %s\n", argv0, sizeof(*unknown->ranges), strerror(errno));
 		exit(1);
 	}
-	nranges = 1U;
-	ranges[0].low = 0;
-	ranges[0].high = ULTIMATE_CODEPOINT;
+	nranges = 1u;
+	ranges[0u].low = 0;
+	ranges[0u].high = ULTIMATE_CODEPOINT;
 
 	for (i = 0; i < nscripts; i++) {
 		scripts[i].nranges = join_ranges(scripts[i].ranges, scripts[i].nranges);
@@ -238,7 +238,7 @@ output(void)
 	for (i = 0; i < nscripts; i++) {
 		x |= printf("static const struct libcmap_range %s[] = {", scripts[i].cname);
 		for (j = 0; j < scripts[i].nranges;) {
-			prefix = j % 5U /* no more than 93!! */ == 0U ? "\n\t" : " ";
+			prefix = j % 5u /* no more than 93!! */ == 0u ? "\n\t" : " ";
 			x |= printf("%s{0x%04lX, 0x%04lX}", prefix, scripts[i].ranges[j].low, scripts[i].ranges[j].high);
 			if (++j < scripts[i].nranges)
 				x |= printf(",");

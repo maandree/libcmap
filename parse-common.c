@@ -7,7 +7,7 @@
 #include <unistd.h>
 
 
-#define ULTIMATE_CODEPOINT 0x10FFFFUL
+#define ULTIMATE_CODEPOINT 0x10FFFFul
 
 
 static const char *argv0;
@@ -21,7 +21,7 @@ static size_t
 parse(char *buf, size_t len)
 {
 	static int prev_was_cr = 0;
-	static size_t lineno = 1U;
+	static size_t lineno = 1u;
 	size_t ret = 0;
 	size_t off = 0;
 	size_t she;
@@ -94,7 +94,7 @@ main(int argc, char *argv[])
 
 	for (;;) {
 		if (len == bufsize) {
-			buf = realloc(buf, bufsize += 8192U);
+			buf = realloc(buf, bufsize += 8192u);
 			if (!buf) {
 				fprintf(stderr, "%s: realloc %zu: %s\n", argv0, bufsize, strerror(errno));
 				exit(1);
