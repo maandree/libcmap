@@ -15,7 +15,7 @@ LIB_MINOR = 0
 LIB_VERSION = $(LIB_MAJOR).$(LIB_MINOR)
 LIB_NAME = cmap
 
-UNICODE_VERSION = 17.0.0
+UNICODE_VERSION = 18.0.0
 # Before updating, remember to check downloaded files
 # changes in how unlisted codepoints should be treated
 
@@ -121,7 +121,10 @@ clean-downloads:
 
 clean-all: clean clean-downloads
 
+download-license:
+	$(DOWNLOAD) 'https://www.unicode.org/license.txt' > LICENSE.UNICODE
+
 .SUFFIXES:
 .SUFFIXES: .lo .o .c
 
-.PHONY: all install uninstall clean clean-downloads clean-all
+.PHONY: all install uninstall clean clean-downloads clean-all download-license
