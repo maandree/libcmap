@@ -11,7 +11,7 @@ libcmap_find_script(uint32_t codepoint, size_t *offset_out, size_t *subrange_out
 	for (i = 0; i < n; i++) {
 		skipped = 0;
 		for (j = 0; j < list[i].nranges; j++) {
-			if (list[i].ranges[j].first <= codepoint && list[i].ranges[j].last <= codepoint) {
+			if (list[i].ranges[j].first <= codepoint && codepoint <= list[i].ranges[j].last) {
 				if (offset_out)
 					*offset_out = skipped + (size_t)(codepoint - list[i].ranges[j].first);
 				if (subrange_out)
