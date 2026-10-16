@@ -21,11 +21,14 @@ UNICODE_VERSION = 17.0.0
 
 
 OBJ =\
+	libcmap_unicode_version.o\
 	libcmap_block_list.o\
 	libcmap_script_list.o\
+	libcmap_codepoint_list.o\
 	libcmap_find_in_no_block.o\
 	libcmap_find_block.o\
 	libcmap_find_script.o\
+	libcmap_find_codepoint_data.o\
 	libcmap_sprint_range.o\
 	libcmap_snprint_range.o\
 	libcmap_fprint_range.o\
@@ -40,22 +43,30 @@ LOBJ = $(OBJ:.o=.lo)
 
 PARSERS =\
 	Scripts.parse\
-	Blocks.parse
+	Blocks.parse\
+	UnicodeData.parse
 
 
 all: libcmap.a libcmap.$(LIBEXT)
 $(OBJ): $(HDR)
 $(LOBJ): $(HDR)
 $(PARSERS:=.o): parse-common.c
+$(PARSERS):
 
 libcmap_script_list.o: Scripts.txt.c
 libcmap_block_list.o: Blocks.txt.c
+libcmap_codepoint_list.o: UnicodeData.txt.c
+
+libcmap_unicode_version.o: Makefile
 
 .c.o:
-	$(CC) -c -o $@ $< $(CFLAGS) $(CPPFLAGS)
+	$(CC) -c -o $@ $< $(CFLAGS) $(CPPFLAGS) -D'UNICODE_VERSION="$(UNICODE_VERSION)"'
 
 .c.lo:
-	$(CC) -fPIC -c -o $@ $< $(CFLAGS) $(CPPFLAGS)
+	$(CC) -fPIC -c -o $@ $< $(CFLAGS) $(CPPFLAGS) -D'UNICODE_VERSION="$(UNICODE_VERSION)"'
+
+.o:
+	$(CC) -o $@ $<
 
 libcmap.a: $(OBJ)
 	@rm -f -- $@
@@ -71,11 +82,17 @@ Scripts.$(UNICODE_VERSION).txt:
 Blocks.$(UNICODE_VERSION).txt:
 	$(DOWNLOAD) 'https://www.unicode.org/Public/$(UNICODE_VERSION)/ucd/Blocks.txt' > $@
 
+UnicodeData.$(UNICODE_VERSION).txt:
+	$(DOWNLOAD) 'https://www.unicode.org/Public/$(UNICODE_VERSION)/ucd/UnicodeData.txt' > $@
+
 Scripts.txt.c: Scripts.$(UNICODE_VERSION).txt Scripts.parse
 	./Scripts.parse < $(@:.txt.c=).$(UNICODE_VERSION).txt > $@
 
 Blocks.txt.c: Blocks.$(UNICODE_VERSION).txt Blocks.parse
 	./Blocks.parse < $(@:.txt.c=).$(UNICODE_VERSION).txt > $@
+
+UnicodeData.txt.c: UnicodeData.$(UNICODE_VERSION).txt UnicodeData.parse
+	./UnicodeData.parse < $(@:.txt.c=).$(UNICODE_VERSION).txt > $@
 
 install: libcmap.a libcmap.$(LIBEXT)
 	mkdir -p -- "$(DESTDIR)$(PREFIX)/lib"

@@ -36,6 +36,88 @@
 #define LIBCMAP_RANGE_SIZE(RANGE) ((size_t)((RANGE)->last - (RANGE)->first + 1u))
 
 
+enum libcmap_general_supercategory {
+	LIBCMAP_GENERAL_SUPERCATEGORY_LETTER = 0x0100u,
+	LIBCMAP_GENERAL_SUPERCATEGORY_MARK = 0x0200u,
+	LIBCMAP_GENERAL_SUPERCATEGORY_NUMBER = 0x0300u,
+	LIBCMAP_GENERAL_SUPERCATEGORY_PUNCTUATION = 0x0400u,
+	LIBCMAP_GENERAL_SUPERCATEGORY_SYMBOL = 0x0500u,
+	LIBCMAP_GENERAL_SUPERCATEGORY_SEPARATOR = 0x0600u,
+	LIBCMAP_GENERAL_SUPERCATEGORY_OTHER = 0x0700u
+};
+
+enum libcmap_general_category {
+	LIBCMAP_GENERAL_CATEGORY_LETTER_UPPERCASE = LIBCMAP_GENERAL_SUPERCATEGORY_LETTER + 1u,
+	LIBCMAP_GENERAL_CATEGORY_LETTER_LOWERCASE,
+	LIBCMAP_GENERAL_CATEGORY_LETTER_TITLECASE,
+	LIBCMAP_GENERAL_CATEGORY_LETTER_MODIFIER,
+	LIBCMAP_GENERAL_CATEGORY_LETTER_OTHER,
+	LIBCMAP_GENERAL_CATEGORY_MARK_NONSPACING = LIBCMAP_GENERAL_SUPERCATEGORY_MARK + 1u,
+	LIBCMAP_GENERAL_CATEGORY_MARK_SPACING_COMBINING,
+	LIBCMAP_GENERAL_CATEGORY_MARK_ENCODING,
+	LIBCMAP_GENERAL_CATEGORY_NUMBER_DECIMAL_DIGIT = LIBCMAP_GENERAL_SUPERCATEGORY_NUMBER + 1u,
+	LIBCMAP_GENERAL_CATEGORY_NUMBER_LETTER,
+	LIBCMAP_GENERAL_CATEGORY_NUMBER_OTHER,
+	LIBCMAP_GENERAL_CATEGORY_PUNCTUATION_CONNECTOR = LIBCMAP_GENERAL_SUPERCATEGORY_PUNCTUATION + 1u,
+	LIBCMAP_GENERAL_CATEGORY_PUNCTUATION_DASH,
+	LIBCMAP_GENERAL_CATEGORY_PUNCTUATION_OPEN,
+	LIBCMAP_GENERAL_CATEGORY_PUNCTUATION_CLOSE,
+	LIBCMAP_GENERAL_CATEGORY_PUNCTUATION_INITIAL_QUOTE,
+	LIBCMAP_GENERAL_CATEGORY_PUNCTUATION_FINAL_QUOTE,
+	LIBCMAP_GENERAL_CATEGORY_PUNCTUATION_OTHER,
+	LIBCMAP_GENERAL_CATEGORY_SYMBOL_MATH = LIBCMAP_GENERAL_SUPERCATEGORY_SYMBOL + 1u,
+	LIBCMAP_GENERAL_CATEGORY_SYMBOL_CURRENCY,
+	LIBCMAP_GENERAL_CATEGORY_SYMBOL_MODIFIER,
+	LIBCMAP_GENERAL_CATEGORY_SYMBOL_OTHER,
+	LIBCMAP_GENERAL_CATEGORY_SEPARATOR_SPACE = LIBCMAP_GENERAL_SUPERCATEGORY_SEPARATOR + 1u,
+	LIBCMAP_GENERAL_CATEGORY_SEPARATOR_LINE,
+	LIBCMAP_GENERAL_CATEGORY_SEPARATOR_PARAGRAPH,
+	LIBCMAP_GENERAL_CATEGORY_OTHER_CONTROL = LIBCMAP_GENERAL_SUPERCATEGORY_OTHER + 1u,
+	LIBCMAP_GENERAL_CATEGORY_OTHER_FORMAT,
+	LIBCMAP_GENERAL_CATEGORY_OTHER_SURROGATE,
+	LIBCMAP_GENERAL_CATEGORY_OTHER_PRIVATE_USE,
+	LIBCMAP_GENERAL_CATEGORY_OTHER_NOT_ASSIGNED
+};
+
+#define LIBCMAP_GENERAL_SUPERCATEGORY_MASK 0x7F00u
+
+
+enum libcmap_bidirectional_supercategory {
+	LIBCMAP_BIDIRECTIONAL_SUPERCATEGORY_STRONG = 0x0100u,
+	LIBCMAP_BIDIRECTIONAL_SUPERCATEGORY_WEAK = 0x0200u,
+	LIBCMAP_BIDIRECTIONAL_SUPERCATEGORY_NEUTRAL = 0x0300u,
+	LIBCMAP_BIDIRECTIONAL_SUPERCATEGORY_EXPLICIT = 0x0400u
+};
+
+enum libcmap_bidirectional_category {
+	LIBCMAP_BIDIRECTIONAL_CATEGORY_LEFT_TO_RIGHT = LIBCMAP_BIDIRECTIONAL_SUPERCATEGORY_STRONG + 1u,
+	LIBCMAP_BIDIRECTIONAL_CATEGORY_RIGHT_TO_LEFT,
+	LIBCMAP_BIDIRECTIONAL_CATEGORY_RIGHT_TO_LEFT_ARABIC,
+	LIBCMAP_BIDIRECTIONAL_CATEGORY_EUROPEAN_NUMBER = LIBCMAP_BIDIRECTIONAL_SUPERCATEGORY_WEAK + 1u,
+	LIBCMAP_BIDIRECTIONAL_CATEGORY_EUROPEAN_NUMBER_SEPARATOR,
+	LIBCMAP_BIDIRECTIONAL_CATEGORY_EUROPEAN_NUMBER_TERMINATOR,
+	LIBCMAP_BIDIRECTIONAL_CATEGORY_ARABIC_NUMBER,
+	LIBCMAP_BIDIRECTIONAL_CATEGORY_COMMON_SEPARATOR,
+	LIBCMAP_BIDIRECTIONAL_CATEGORY_NONSPACING_MARK,
+	LIBCMAP_BIDIRECTIONAL_CATEGORY_BOUNDARY_NEUTRAL,
+	LIBCMAP_BIDIRECTIONAL_CATEGORY_PARAGRAPH_SEPARATOR = LIBCMAP_BIDIRECTIONAL_SUPERCATEGORY_NEUTRAL + 1u,
+	LIBCMAP_BIDIRECTIONAL_CATEGORY_SEGMENT_SEPARATOR,
+	LIBCMAP_BIDIRECTIONAL_CATEGORY_WHITESPACE,
+	LIBCMAP_BIDIRECTIONAL_CATEGORY_OTHER_NEUTRALS,
+	LIBCMAP_BIDIRECTIONAL_CATEGORY_LEFT_TO_RIGHT_EMBEDDING = LIBCMAP_BIDIRECTIONAL_SUPERCATEGORY_EXPLICIT + 1u,
+	LIBCMAP_BIDIRECTIONAL_CATEGORY_LEFT_TO_RIGHT_OVERRIDE,
+	LIBCMAP_BIDIRECTIONAL_CATEGORY_RIGHT_TO_LEFT_EMBEDDING,
+	LIBCMAP_BIDIRECTIONAL_CATEGORY_RIGHT_TO_LEFT_OVERRIDE,
+	LIBCMAP_BIDIRECTIONAL_CATEGORY_POP_DIRECTIONAL_FORMAT,
+	LIBCMAP_BIDIRECTIONAL_CATEGORY_LEFT_TO_RIGHT_ISOLATE,
+	LIBCMAP_BIDIRECTIONAL_CATEGORY_RIGHT_TO_LEFT_ISOLATE,
+	LIBCMAP_BIDIRECTIONAL_CATEGORY_FIRST_STRONG_ISOLATE,
+	LIBCMAP_BIDIRECTIONAL_CATEGORY_POP_DIRECTIONAL_ISOLATE
+};
+
+#define LIBCMAP_BIDIRECTIONAL_SUPERCATEGORY_MASK 0x7F00u
+
+
 /**
  * Contiguous range of Unicode codepoints
  *
@@ -107,6 +189,52 @@ struct libcmap_script {
 
 
 /**
+ * Information about a specific codepoint
+ */
+struct libcmap_codepoint_data {
+	/**
+	 * The name as published in the Unicode Standard code charts
+	 *
+	 * It uniquely identifies the character unless it starts with '<'
+	 */
+	const char *name;
+
+	/* TODO documentation is needed */
+	enum libcmap_general_category general_category;
+	enum libcmap_bidirectional_category bidirectional_category;
+	uint16_t canonical_combining_classes;
+	uint16_t bidirectional_mirrored;
+	const char *unicode_1_name;
+};
+
+
+/**
+ * Contiguous block of codepoints with
+ * data for each codepoint
+ */
+struct libcmap_codepoint_segment {
+	/**
+	 * The range of codepoints the segment covers
+	 */
+	struct libcmap_range range;
+
+	/**
+	 * data for each codepoint in the segment,
+	 *
+	 * `.data[codepoint - .range.first]` gives the entry for
+	 * a specific codepoint without [`.range.first, `.range.last`]
+	 */
+	const struct libcmap_codepoint_data *data;
+};
+
+
+/**
+ * The version of the Unicode Standard that the library is
+ * compiled with data for
+ */
+extern const char *const libcmap_unicode_version;
+
+/**
  * Listing of all Unicode codepoints not assigned any block
  * 
  * This listing can potentially be empty
@@ -162,6 +290,23 @@ extern const struct libcmap_script *const libcmap_script_list;
  * The number of elements in `libcmap_script_list`
  */
 extern const size_t libcmap_script_list_size;
+
+/**
+ * Data about codepoints
+ *
+ * There are gaps, hence the list is segmented
+ *
+ * The list is sorted in ascending order
+ *
+ * @seealso  libcmap_codepoint_list_size
+ * @seealso  libcmap_find_codepoint_data
+ */
+extern const struct libcmap_codepoint_segment *const libcmap_codepoint_list;
+
+/**
+ * The number of elements in `libcmap_codepoint_list`
+ */
+extern const size_t libcmap_codepoint_list_size;
 
 
 /**
@@ -234,6 +379,23 @@ const struct libcmap_block *libcmap_find_block(uint32_t codepoint, size_t *offse
  * @seealso  libcmap_find_block
  */
 const struct libcmap_script *libcmap_find_script(uint32_t codepoint, size_t *offset_out, size_t *subrange_out);
+
+
+/**
+ * Find data about a specified codepoint
+ *
+ * @param   codepoint  The codepoint
+ * @return             Information from UnicodeData about the codepoint,
+ *                     `NULL` if not found
+ *
+ * `NULL`-return doesn't necessary mean it is unassigned,
+ * but rather just that it doesn't appear in UnicodeData,
+ * which is common for ideographs
+ * 
+ * @seealso  libcmap_codepoint_list
+ */
+LIBCMAP_PURE_
+const struct libcmap_codepoint_data *libcmap_find_codepoint_data(uint32_t codepoint);
 
 
 /**
