@@ -24,6 +24,7 @@ parse_line(char *text, size_t lineno)
 {
 	unsigned long int low, high;
 	char *name;
+	intptr_t j;
 	size_t i;
 
 	errno = 0;
@@ -55,8 +56,8 @@ parse_line(char *text, size_t lineno)
 	name = text;
 	while (*text && *text != ';')
 		text++;
-	for (i = 1u; isspace(*(text - i)); i++)
-		*(text - i) = '\0';
+	for (j = 1; isspace(text[-j]); j++)
+		text[-j] = '\0';
 
 	if (*text == ';') {
 		static int warned = 0;
