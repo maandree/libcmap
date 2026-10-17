@@ -290,6 +290,9 @@ sequence_cmp(const void *a_, const void *b_)
 }
 
 
+#if defined(__GNUC__)
+__attribute__((__pure__))
+#endif
 static int
 is_same_sequence(const uint32_t *a, const uint32_t *b, size_t n)
 {
