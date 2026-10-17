@@ -55,8 +55,8 @@ parse_line(char *text, size_t lineno)
 	name = text;
 	while (*text && *text != ';')
 		text++;
-	for (i = 1u; isspace(text[-i]); i++)
-		text[-i] = '\0';
+	for (i = 1u; isspace(*(text - i)); i++)
+		*(text - i) = '\0';
 
 	if (*text == ';') {
 		static int warned = 0;
