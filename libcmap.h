@@ -76,6 +76,11 @@ enum libcmap_general_category {
 	LIBCMAP_GENERAL_CATEGORY_OTHER_FORMAT,
 	LIBCMAP_GENERAL_CATEGORY_OTHER_SURROGATE,
 	LIBCMAP_GENERAL_CATEGORY_OTHER_PRIVATE_USE,
+
+	/**
+	 * This category has two subcategories: noncharacter and reserved
+	 * If .noncharacter it is not a character, otherwise it is reserved
+	 */
 	LIBCMAP_GENERAL_CATEGORY_OTHER_NOT_ASSIGNED
 };
 
@@ -240,7 +245,8 @@ struct libcmap_codepoint_data {
 	uint32_t simple_titlecase_mapping : 21;
 	uint32_t decomposition_mapping_size : 6;
 	uint32_t bidirectional_mirrored : 1;
-	uint32_t : 4;
+	uint32_t noncharacter : 1;
+	uint32_t : 3;
 };
 
 

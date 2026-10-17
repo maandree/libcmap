@@ -129,10 +129,12 @@ static int
 output_character_data(char *text)
 {
 	char *field, *numeric_value = NULL, *simple_uppercase_mapping;
+	unsigned long int codepoint;
 	const char *formatted;
 	size_t n, i;
 
-	if (!(field = split(&text))) return 0; /* codepoint */
+	if (!(field = split(&text))) return 0;
+	codepoint = strtoul(field, &field, 16);
 
 	if (!(field = split(&text))) return 0;
 	add_linef(".name = \"%s\"", field);
@@ -145,6 +147,13 @@ output_character_data(char *text)
 
 	if (!(field = split(&text))) return 0;
 	add_linef(", .bidirectional_category = BIDIRECTIONAL_CATEGORY_%s", field);
+	if (strcmp(field, "Cn")) {
+		add_linef(", .noncharacter = 0");
+	} else if ((0xFDD0u <= codepoint && codepoint <= 0xFDEFu) || (codepoint & 0xFFFEu) == 0xFFFEu) {
+		add_linef(", .noncharacter = 1");
+	} else {
+		add_linef(", .noncharacter = 0");
+	}
 
 	if (!(field = split(&text))) return 0;
 	if (!*field) {
