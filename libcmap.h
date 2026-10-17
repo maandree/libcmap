@@ -117,6 +117,33 @@ enum libcmap_bidirectional_category {
 
 #define LIBCMAP_BIDIRECTIONAL_SUPERCATEGORY_MASK 0x7F00u
 
+enum libcmap_numeric_type {
+	LIBCMAP_NUMERIC_TYPE_NONE,
+	LIBCMAP_NUMERIC_TYPE_DECIMAL,
+	LIBCMAP_NUMERIC_TYPE_DIGIT,
+	LIBCMAP_NUMERIC_TYPE_NUMERIC
+};
+
+enum libcmap_decomposition_type {
+	LIBCMAP_DECOMPOSITION_TYPE_CANONICAL,
+	LIBCMAP_DECOMPOSITION_TYPE_FONT,
+	LIBCMAP_DECOMPOSITION_TYPE_NO_BREAK,
+	LIBCMAP_DECOMPOSITION_TYPE_INITIAL,
+	LIBCMAP_DECOMPOSITION_TYPE_MEDIAL,
+	LIBCMAP_DECOMPOSITION_TYPE_FINAL,
+	LIBCMAP_DECOMPOSITION_TYPE_ISOLATED,
+	LIBCMAP_DECOMPOSITION_TYPE_CIRCLE,
+	LIBCMAP_DECOMPOSITION_TYPE_SUPER,
+	LIBCMAP_DECOMPOSITION_TYPE_SUB,
+	LIBCMAP_DECOMPOSITION_TYPE_VERTICAL,
+	LIBCMAP_DECOMPOSITION_TYPE_WIDE,
+	LIBCMAP_DECOMPOSITION_TYPE_NARROW,
+	LIBCMAP_DECOMPOSITION_TYPE_SMALL,
+	LIBCMAP_DECOMPOSITION_TYPE_SQUARE,
+	LIBCMAP_DECOMPOSITION_TYPE_FRACTION,
+	LIBCMAP_DECOMPOSITION_TYPE_COMPAT
+};
+
 
 /**
  * Contiguous range of Unicode codepoints
@@ -200,11 +227,20 @@ struct libcmap_codepoint_data {
 	const char *name;
 
 	/* TODO documentation is needed */
-	enum libcmap_general_category general_category;
-	enum libcmap_bidirectional_category bidirectional_category;
-	uint16_t canonical_combining_classes;
-	uint16_t bidirectional_mirrored;
 	const char *unicode_1_name;
+	const char *numeric_value;
+	const uint32_t *decomposition_mapping;
+	enum libcmap_general_category general_category : 16;
+	enum libcmap_bidirectional_category bidirectional_category : 16;
+	uint32_t simple_uppercase_mapping : 21;
+	enum libcmap_numeric_type numeric_type : 4;
+	enum libcmap_decomposition_type decomposition_type : 7;
+	uint32_t simple_lowercase_mapping : 21;
+	uint32_t canonical_combining_classes : 11;
+	uint32_t simple_titlecase_mapping : 21;
+	uint32_t decomposition_mapping_size : 6;
+	uint32_t bidirectional_mirrored : 1;
+	uint32_t : 4;
 };
 
 

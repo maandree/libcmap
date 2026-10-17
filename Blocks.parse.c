@@ -1,6 +1,13 @@
 /* See LICENSE file for copyright and license details. */
 #include "parse-common.c"
 
+#if defined(__clang__)
+# pragma clang diagnostic ignored "-Wunsafe-buffer-usage" /* broken */
+# pragma clang diagnostic ignored "-Wimplicit-void-ptr-cast" /* C++ */
+# pragma clang diagnostic ignored "-Wpre-c11-compat" /* C++ */
+# pragma clang diagnostic ignored "-Wdisabled-macro-expansion" /* libc */
+#endif
+
 
 struct block {
 	char *name;
@@ -23,7 +30,7 @@ parse_line(char *text, size_t lineno)
 
 	if (!isxdigit(*text)) {
 	malformat:
-		fprintf(stderr, "%s: line %zu in is malformatted\n", argv0, lineno);
+		fprintf(stderr, "%s: line %zu is malformatted\n", argv0, lineno);
 		exit(1);
 	}
 

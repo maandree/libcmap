@@ -2,11 +2,19 @@
 #include <ctype.h>
 #include <errno.h>
 #include <inttypes.h>
+#include <stdarg.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+
+#if defined(__clang__)
+# pragma clang diagnostic ignored "-Wunsafe-buffer-usage" /* broken */
+# pragma clang diagnostic ignored "-Wimplicit-void-ptr-cast" /* C++ */
+# pragma clang diagnostic ignored "-Wpre-c11-compat" /* C++ */
+# pragma clang diagnostic ignored "-Wdisabled-macro-expansion" /* libc */
+#endif
 
 
 #define ULTIMATE_CODEPOINT 0x10FFFFul

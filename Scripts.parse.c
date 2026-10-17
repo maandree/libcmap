@@ -74,7 +74,7 @@ parse_line(char *text, size_t lineno)
 
 	if (!isxdigit(*text)) {
 	malformat:
-		fprintf(stderr, "%s: line %zu in is malformatted\n", argv0, lineno);
+		fprintf(stderr, "%s: line %zu is malformatted\n", argv0, lineno);
 		exit(1);
 	}
 

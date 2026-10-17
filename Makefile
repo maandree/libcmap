@@ -86,13 +86,13 @@ UnicodeData.$(UNICODE_VERSION).txt:
 	$(DOWNLOAD) 'https://www.unicode.org/Public/$(UNICODE_VERSION)/ucd/UnicodeData.txt' > $@
 
 Scripts.txt.c: Scripts.$(UNICODE_VERSION).txt Scripts.parse
-	./Scripts.parse < $(@:.txt.c=).$(UNICODE_VERSION).txt > $@
+	./Scripts.parse < $(@:.txt.c=).$(UNICODE_VERSION).txt > $@ || (rm -f -- "$@"; ! :)
 
 Blocks.txt.c: Blocks.$(UNICODE_VERSION).txt Blocks.parse
-	./Blocks.parse < $(@:.txt.c=).$(UNICODE_VERSION).txt > $@
+	./Blocks.parse < $(@:.txt.c=).$(UNICODE_VERSION).txt > $@ || (rm -f -- "$@"; ! :)
 
 UnicodeData.txt.c: UnicodeData.$(UNICODE_VERSION).txt UnicodeData.parse
-	./UnicodeData.parse < $(@:.txt.c=).$(UNICODE_VERSION).txt > $@
+	./UnicodeData.parse < $(@:.txt.c=).$(UNICODE_VERSION).txt > $@ || (rm -f -- "$@"; ! :)
 
 install: libcmap.a libcmap.$(LIBEXT)
 	mkdir -p -- "$(DESTDIR)$(PREFIX)/lib"
