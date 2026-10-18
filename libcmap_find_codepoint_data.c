@@ -21,5 +21,5 @@ libcmap_find_codepoint_data(uint32_t codepoint)
 		}
 	}
 
-	return NULL;	
+	return NULL;
 }

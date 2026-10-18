@@ -1,0 +1,59 @@
+/* See LICENSE file for copyright and license details. */
+#include "common.h"
+
+
+const char *
+libcmap_general_category_string(enum libcmap_general_category value)
+{
+	switch ((enum libcmap_general_supercategory)value) {
+	case LIBCMAP_GENERAL_SUPERCATEGORY_LETTER: return "Letter";
+	case LIBCMAP_GENERAL_SUPERCATEGORY_MARK: return "Mark";
+	case LIBCMAP_GENERAL_SUPERCATEGORY_NUMBER: return "Number";
+	case LIBCMAP_GENERAL_SUPERCATEGORY_PUNCTUATION: return "Punctuation";
+	case LIBCMAP_GENERAL_SUPERCATEGORY_SYMBOL: return "Symbol";
+	case LIBCMAP_GENERAL_SUPERCATEGORY_SEPARATOR: return "Separator";
+	case LIBCMAP_GENERAL_SUPERCATEGORY_OTHER: return "Other";
+	default: break;
+	}
+
+	switch (value) {
+	case LIBCMAP_GENERAL_CATEGORY_LETTER_UPPERCASE: return "Uppercase";
+	case LIBCMAP_GENERAL_CATEGORY_LETTER_LOWERCASE: return "Lowercase";
+	case LIBCMAP_GENERAL_CATEGORY_LETTER_TITLECASE: return "Titlecase";
+	case LIBCMAP_GENERAL_CATEGORY_LETTER_MODIFIER: return "Modifier";
+	case LIBCMAP_GENERAL_CATEGORY_LETTER_OTHER: return "Other";
+
+	case LIBCMAP_GENERAL_CATEGORY_MARK_NONSPACING: return "Non-spacing";
+	case LIBCMAP_GENERAL_CATEGORY_MARK_SPACING: return "Spacing";
+	case LIBCMAP_GENERAL_CATEGORY_MARK_ENCLOSING: return "Enclosing";
+
+	case LIBCMAP_GENERAL_CATEGORY_NUMBER_DECIMAL_DIGIT: return "Decimal digit";
+	case LIBCMAP_GENERAL_CATEGORY_NUMBER_LETTER: return "Letter";
+	case LIBCMAP_GENERAL_CATEGORY_NUMBER_OTHER: return "Other";
+
+	case LIBCMAP_GENERAL_CATEGORY_PUNCTUATION_CONNECTOR: return "Connector";
+	case LIBCMAP_GENERAL_CATEGORY_PUNCTUATION_DASH: return "Dash";
+	case LIBCMAP_GENERAL_CATEGORY_PUNCTUATION_OPEN: return "Open";
+	case LIBCMAP_GENERAL_CATEGORY_PUNCTUATION_CLOSE: return "Close";
+	case LIBCMAP_GENERAL_CATEGORY_PUNCTUATION_INITIAL_QUOTE: return "Initial quote";
+	case LIBCMAP_GENERAL_CATEGORY_PUNCTUATION_FINAL_QUOTE: return "Finak quote";
+	case LIBCMAP_GENERAL_CATEGORY_PUNCTUATION_OTHER: return "Other";
+
+	case LIBCMAP_GENERAL_CATEGORY_SYMBOL_MATH: return "Math";
+	case LIBCMAP_GENERAL_CATEGORY_SYMBOL_CURRENCY: return "Currency";
+	case LIBCMAP_GENERAL_CATEGORY_SYMBOL_MODIFIER: return "Modifier";
+	case LIBCMAP_GENERAL_CATEGORY_SYMBOL_OTHER: return "Other";
+
+	case LIBCMAP_GENERAL_CATEGORY_SEPARATOR_SPACE: return "Space";
+	case LIBCMAP_GENERAL_CATEGORY_SEPARATOR_LINE: return "Line";
+	case LIBCMAP_GENERAL_CATEGORY_SEPARATOR_PARAGRAPH: return "Paragraph";
+
+	case LIBCMAP_GENERAL_CATEGORY_OTHER_CONTROL: return "Control";
+	case LIBCMAP_GENERAL_CATEGORY_OTHER_FORMAT: return "Format";
+	case LIBCMAP_GENERAL_CATEGORY_OTHER_SURROGATE: return "Surrogate";
+	case LIBCMAP_GENERAL_CATEGORY_OTHER_PRIVATE_USE: return "Private-use";
+	case LIBCMAP_GENERAL_CATEGORY_OTHER_NOT_ASSIGNED: return "Not assigned";
+
+	default: return NULL;
+	}
+}

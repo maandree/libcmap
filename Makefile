@@ -29,6 +29,11 @@ OBJ =\
 	libcmap_find_block.o\
 	libcmap_find_script.o\
 	libcmap_find_codepoint_data.o\
+	libcmap_get_codepoint_data.o\
+	libcmap_general_category_string.o\
+	libcmap_bidirectional_category_string.o\
+	libcmap_numeric_type_string.o\
+	libcmap_decomposition_type_string.o\
 	libcmap_sprint_range.o\
 	libcmap_snprint_range.o\
 	libcmap_fprint_range.o\

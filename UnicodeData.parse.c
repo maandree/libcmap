@@ -128,6 +128,8 @@ split(char **text)
 static int
 output_character_data(char *text)
 {
+	static int first_first = 1;
+
 	char *field, *numeric_value = NULL, *simple_uppercase_mapping;
 	unsigned long int codepoint;
 	const char *formatted;
@@ -138,6 +140,17 @@ output_character_data(char *text)
 
 	if (!(field = split(&text))) return 0;
 	add_linef(".name = \"%s\"", field);
+	if (strstr(field, ", First>")) {
+		if (first_first) {
+			ret |= printf("static const struct libcmap_range gaplist[] = {\n");
+			first_first = 0;
+		} else {
+			ret |= printf(",\n");
+		}
+		ret |= printf("\t{UINT32_C(0x%04lX)", codepoint);
+	} else if (strstr(field, ", Last>")) {
+		ret |= printf(", UINT32_C(0x%04lX)}", codepoint);
+	}
 
 	if (!(field = split(&text))) return 0;
 	add_linef(", .general_category = GENERAL_CATEGORY_%s", field);
@@ -215,7 +228,10 @@ output_character_data(char *text)
 	add_linef(", .bidirectional_mirrored = BIDIRECTIONAL_MIRRORED_%s", field);
 
 	if (!(field = split(&text))) return 0;
-	add_linef(", .unicode_1_name = \"%s\"", field);
+	if (*field)
+		add_linef(", .unicode_1_name = \"%s\"", field);
+	else
+		add_linef(", .unicode_1_name = NULL");
 
 	if (!(field = split(&text))) return 0; /* ISO 10646 comment field -- always empty as of Unicode 5.2.0 */
 
@@ -370,6 +386,8 @@ output(void)
 	uint32_t decomp[LONGEST_DECOMPOSITION];
 	uint32_t *seq = NULL;
 	size_t i, seqlen = 0u, off, end, ext;
+
+	ret |= printf("\n};\n");
 
 	if (!nsegments) {
 		fprintf(stderr, "%s: character list is empty\n", argv0);

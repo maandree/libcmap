@@ -53,8 +53,8 @@ enum libcmap_general_category {
 	LIBCMAP_GENERAL_CATEGORY_LETTER_MODIFIER,
 	LIBCMAP_GENERAL_CATEGORY_LETTER_OTHER,
 	LIBCMAP_GENERAL_CATEGORY_MARK_NONSPACING = LIBCMAP_GENERAL_SUPERCATEGORY_MARK + 1u,
-	LIBCMAP_GENERAL_CATEGORY_MARK_SPACING_COMBINING,
-	LIBCMAP_GENERAL_CATEGORY_MARK_ENCODING,
+	LIBCMAP_GENERAL_CATEGORY_MARK_SPACING,
+	LIBCMAP_GENERAL_CATEGORY_MARK_ENCLOSING,
 	LIBCMAP_GENERAL_CATEGORY_NUMBER_DECIMAL_DIGIT = LIBCMAP_GENERAL_SUPERCATEGORY_NUMBER + 1u,
 	LIBCMAP_GENERAL_CATEGORY_NUMBER_LETTER,
 	LIBCMAP_GENERAL_CATEGORY_NUMBER_OTHER,
@@ -78,8 +78,11 @@ enum libcmap_general_category {
 	LIBCMAP_GENERAL_CATEGORY_OTHER_PRIVATE_USE,
 
 	/**
-	 * This category has two subcategories: noncharacter and reserved
-	 * If .noncharacter it is not a character, otherwise it is reserved
+	 * This category has two subcategories: noncharacter and reserved.
+	 * If .noncharacter it is not a character, otherwise it is reserved.
+	 * Unfortunately, at the moment there is no way, in the case of
+	 * reserved to distinguish between permanently reserved and not yet
+	 * assigned
 	 */
 	LIBCMAP_GENERAL_CATEGORY_OTHER_NOT_ASSIGNED
 };
@@ -342,6 +345,7 @@ extern const size_t libcmap_script_list_size;
  *
  * @seealso  libcmap_codepoint_list_size
  * @seealso  libcmap_find_codepoint_data
+ * @seealso  libcmap_get_codepoint_data
  */
 extern const struct libcmap_codepoint_segment *const libcmap_codepoint_list;
 
@@ -349,6 +353,17 @@ extern const struct libcmap_codepoint_segment *const libcmap_codepoint_list;
  * The number of elements in `libcmap_codepoint_list`
  */
 extern const size_t libcmap_codepoint_list_size;
+
+/**
+ * List of ranges of codepoints not covered by `libcmap_codepoint_list`
+ * (the boundaries are covered with improper entries)
+ */
+extern const struct libcmap_range *const libcmap_no_data_range_list;
+
+/**
+ * The number of elements in `libcmap_no_data_range_list`
+ */
+extern const size_t libcmap_no_data_range_list_size;
 
 
 /**
@@ -426,6 +441,9 @@ const struct libcmap_script *libcmap_find_script(uint32_t codepoint, size_t *off
 /**
  * Find data about a specified codepoint
  *
+ * You should generally use `libcmap_get_codepoint_data`
+ * instead of this function
+ *
  * @param   codepoint  The codepoint
  * @return             Information from UnicodeData about the codepoint,
  *                     `NULL` if not found
@@ -435,9 +453,45 @@ const struct libcmap_script *libcmap_find_script(uint32_t codepoint, size_t *off
  * which is common for ideographs
  * 
  * @seealso  libcmap_codepoint_list
+ * @seealso  libcmap_get_codepoint_data
  */
 LIBCMAP_PURE_
 const struct libcmap_codepoint_data *libcmap_find_codepoint_data(uint32_t codepoint);
+
+/**
+ * Get data about a specified codepoint
+ *
+ * @param   codepoint  The codepoint
+ * @param   data_out   Output parameter for the data
+ * @param   buffer     Buffer that the function can store data in, this data
+ *                     is then referenced by pointers in `*data_out`
+ * @param   bufsizep   Input parameter for the size of `buffer`, and
+ *                     output parameter for the required size of `buffer`
+ *                     (only set when -1 is returned with `errno` set to ERANGE)
+ * @return             1 if `codepoint` is within the range of codepoints
+ *                     (that is, if `codepoint` is no greater than
+ *                     LIBCMAP_ULTIMATE_CODEPOINT), 0 otherwise, -1 on failure
+ *
+ * @throws  ERANGE  `*bufsizep` was too small, but has been update with the required size
+ *
+ * `*data_out` is only updated if 1 is returned
+ *
+ * Unlike `libcmap_find_codepoint_data`, this function can
+ * synthesis the data for codepoints that are not in UnicodeData,
+ * and can correct the names where the codepoint is listing in
+ * UnicodeData as the start or end of an omitted range
+ *
+ * @seealso  libcmap_codepoint_list
+ * @seealso  libcmap_find_codepoint_data
+ */
+int libcmap_get_codepoint_data(uint32_t codepoint, struct libcmap_codepoint_data *data_out, void *buffer, size_t *bufsizep);
+
+
+/* TODO documentation is needed */
+LIBCMAP_CONST_ const char *libcmap_general_category_string(enum libcmap_general_category value);
+LIBCMAP_CONST_ const char *libcmap_bidirectional_category_string(enum libcmap_bidirectional_category value);
+LIBCMAP_CONST_ const char *libcmap_numeric_type_string(enum libcmap_numeric_type value);
+LIBCMAP_CONST_ const char *libcmap_decomposition_type_string(enum libcmap_decomposition_type value);
 
 
 /**
